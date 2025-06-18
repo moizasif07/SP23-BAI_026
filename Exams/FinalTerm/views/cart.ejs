@@ -1,0 +1,37 @@
+
+
+    <div class="cart-container">
+        <h1>Shopping Cart</h1>
+        
+        <% if (cart && cart.items && cart.items.length > 0) { %>
+            <% cart.items.forEach(item => { %>
+                <div class="cart-item" data-id="<%= item.productId %>">
+                    <img src="<%= item.imageUrl || '/images/default-product.jpg' %>" alt="<%= item.name %>" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <h3 class="cart-item-title"><%= item.name %></h3>
+                        <p class="cart-item-price">$<%= item.price %></p>
+                    </div>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn decrease">-</button>
+                        <span class="quantity-display"><%= item.quantity %></span>
+                        <button class="quantity-btn increase">+</button>
+                    </div>
+                    <button class="quantity-btn remove" onclick="removeItem('<%= item.productId %>')">×</button>
+                </div>
+            <% }); %>
+
+            <div class="cart-summary">
+                <div class="total-price">
+                    Total: $<span id="cartTotal"><%= cart.items.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2) %></span>
+                </div>
+                <button class="place-order-btn" onclick="window.location.href='/cart/checkout'">Place Order</button>
+            </div>
+        <% } else { %>
+            <div class="empty-cart">
+                <h2>Your cart is empty</h2>
+                <p>Add some products to your cart to see them here!</p>
+                <a href="/products" class="btn">Continue Shopping</a>
+            </div>
+        <% } %>
+    </div>
+

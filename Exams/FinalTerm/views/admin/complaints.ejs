@@ -1,0 +1,34 @@
+<div class="complaints-container">
+    <h1>Customer Complaints</h1>
+    
+    <% if (locals.error) { %>
+        <div class="error-message">
+            <%= error %>
+        </div>
+    <% } %>
+    
+    <% if (complaints && complaints.length > 0) { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>User</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% complaints.forEach(complaint => { %>
+                    <tr>
+                        <td><%= complaint.orderId %></td>
+                        <td><%= complaint.userId ? complaint.userId.email : 'Unknown User' %></td>
+                        <td><%= complaint.message %></td>
+                        <td><%= new Date(complaint.timestamp).toLocaleDateString() %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>No complaints found.</p>
+    <% } %>
+</div> 

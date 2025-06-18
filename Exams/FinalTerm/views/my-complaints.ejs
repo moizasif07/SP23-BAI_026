@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Complaints - Gymshark</title>
+    <link rel="stylesheet" href="/styles/contact.css">
+</head>
+<body>
+    <div class="contact-container">
+        <h1>My Complaints</h1>
+        
+        <% if (locals.error) { %>
+            <div class="error-message">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <% if (complaints && complaints.length > 0) { %>
+            <div class="complaints-list">
+                <% complaints.forEach(complaint => { %>
+                    <div class="complaint-card">
+                        <div class="complaint-header">
+                            <span class="order-id">Order ID: <%= complaint.orderId %></span>
+                            <span class="date"><%= new Date(complaint.timestamp).toLocaleDateString() %></span>
+                        </div>
+                        <div class="complaint-message">
+                            <%= complaint.message %>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <p class="no-complaints">You haven't submitted any complaints yet.</p>
+        <% } %>
+
+        <div class="action-buttons">
+            <a href="/contact" class="submit-btn">Submit New Complaint</a>
+        </div>
+    </div>
+</body>
+</html> 

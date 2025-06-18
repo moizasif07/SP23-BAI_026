@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - GymShark Admin</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+    <style>
+        .orders-container {
+            padding: 2rem;
+        }
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .orders-table th,
+        .orders-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .orders-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-processing { background: #cce5ff; color: #004085; }
+        .status-shipped { background: #d4edda; color: #155724; }
+        .status-delivered { background: #d1e7dd; color: #0f5132; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .order-details {
+            background: #f8f9fa;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            border-radius: 4px;
+            display: none;
+        }
+        .order-details.active {
+            display: block;
+        }
+        .order-section {
+            margin-bottom: 1rem;
+        }
+        .order-section h3 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+        .order-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+        }
+        .order-items th,
+        .order-items td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .toggle-details {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+        .toggle-details:hover {
+            text-decoration: underline;
+        }
+        .status-select {
+            padding: 0.25rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="orders-container">
+        <h1>Order Management</h1>
+        
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(order => { %>
+                    <tr>
+                        <td><%= order._id %></td>
+                        <td>
+                            <%= order.shippingDetails.fullName %><br>
+                            <small><%= order.shippingDetails.email %></small>
+                        </td>
+                        <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                        <td>$<%= order.totalAmount.toFixed(2) %></td>
+                        <td>
+                            <span class="status-badge status-<%= order.status %>">
+                                <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+                            </span>
+                            <select class="status-select" data-order-id="<%= order._id %>">
+                                <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                                <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                                <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="toggle-details" data-order-id="<%= order._id %>">View Details</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <div class="order-details" id="details-<%= order._id %>">
+                                <div class="order-section">
+                                    <h3>Customer Information</h3>
+                                    <p><strong>Name:</strong> <%= order.shippingDetails.fullName %></p>
+                                    <p><strong>Email:</strong> <%= order.shippingDetails.email %></p>
+                                    <p><strong>Phone:</strong> <%= order.shippingDetails.phone %></p>
+                                </div>
+
+                                <div class="order-section">
+                                    <h3>Shipping Address</h3>
+                                    <p><%= order.shippingDetails.address %></p>
+                                    <p><%= order.shippingDetails.city %>, <%= order.shippingDetails.state %> <%= order.shippingDetails.zipCode %></p>
+                                </div>
+
+                                <div class="order-section">
+                                    <h3>Order Items</h3>
+                                    <table class="order-items">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Price</th>
+                                                <th>Quantity</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% order.items.forEach(item => { %>
+                                                <tr>
+                                                    <td>
+                                                        <div style="display: flex; align-items: center; gap: 1rem;">
+                                                            <img src="<%= item.imageUrl || '/images/default-product.jpg' %>" alt="<%= item.name %>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                                            <div>
+                                                                <div><%= item.name %></div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>$<%= item.price.toFixed(2) %></td>
+                                                    <td><%= item.quantity %></td>
+                                                    <td>$<%= (item.price * item.quantity).toFixed(2) %></td>
+                                                </tr>
+                                            <% }); %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html> 
