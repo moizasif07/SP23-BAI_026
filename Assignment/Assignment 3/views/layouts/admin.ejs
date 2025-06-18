@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymShark Admin</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>GymShark Admin</h1>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/admin" class="nav-link <%= path === '/admin' ? 'active' : '' %>">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/products/add" class="nav-link <%= path === '/admin/products/add' ? 'active' : '' %>">Add Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/orders" class="nav-link <%= path === '/admin/orders' ? 'active' : '' %>">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">View Site</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/users/logout" class="nav-link">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/complaints" class="nav-link <%= path === '/admin/complaints' ? 'active' : '' %>">Complaints</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <%- body %>
+        </main>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gymshark Landing Page</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/user.css">
+    <link rel="stylesheet" href="/styles/product.css">
+
+</head>
+
+<body>
+    <div class="top-header">
+        <% if (user) { %>
+            <a href="/users/logout" class="logout-btn">Logout</a>
+        <% } else { %>
+            <a href="/users/register" class="icon">👤 Account</a>
+        <% } %>
+        <a href="#">Accessibility Statement</a>
+        <a href="/contact">Help</a>
+        <a href="#">Email Sign Up</a>
+        <a href="#">Blog</a>
+
+        <div class="dropdown">
+            <a href="#">US</a>
+            <div class="dropdown-content">
+                <a href="#">US</a>
+                <a href="#">UK</a>
+                <a href="#">Canada</a>
+                <a href="">Pakisan</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#">English</a>
+            <div class="dropdown-content">
+                <a href="#">English</a>
+                <a href="#">French</a>
+                <a href="#">Spanish</a>
+                <a href="">Urdu</a>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar">
+        <a href="/"><img src="../media/images/logo.svg" alt="Gymshark Logo"></a>
+        <div class="nav-links">
+            <a href="/cart/my-orders">My-Orders</a>
+            <a href="#">Women</a>
+            <a href="#">Men</a>
+            <a href="/products">Products</a>
+            <% if (user && user.role === 'admin') { %>
+                <a href="/admin" class="admin-panel-btn">Admin</a>
+            <% } %>
+            <a href="/cart" class="cart-icon">🛒</a>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="What are you looking for today...">
+            </div>
+        </div>
+    </nav>
+
+    <%- body %>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>HELP</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Delivery Information</a></li>
+                    <li><a href="#">Returns Policy</a></li>
+                    <li><a href="#">Make A Return</a></li>
+                    <li><a href="#">Orders</a></li>
+                    <li><a href="#">Submit a Fake</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>MY ACCOUNT</h4>
+                <ul>
+                    <li><a href="/users/login">Login</a></li>
+                    <li><a href="/users/register">Register</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PAGES</h4>
+                <ul>
+                    <li><a href="#">Refer a Friend</a></li>
+                    <li><a href="#">Gymshark Central</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Student Discount</a></li>
+                    <li><a href="#">Military Discount</a></li>
+                    <li><a href="#">Accessibility Statement</a></li>
+                    <li><a href="#">Factory List</a></li>
+                    <li><a href="#">Sustainability</a></li>
+                </ul>
+            </div>
+            <div class="footer-section more-about">
+                <h4>MORE ABOUT GYMSHARK</h4>
+                <div class="more-about-links">
+                    <div class="about-box">
+                        <img src="../media/images/blog.avif" alt="Blog">
+                        <p>BLOG</p>
+                    </div>
+                    <div class="about-box">
+                        <img src="../media/images/email.avif" alt="Email Sign Up">
+                        <p>EMAIL SIGN UP</p>
+                    </div>
+                    <div class="about-box">
+                        <img src="../media/images/training.avif"Gymshark Training">
+                        <p>GYMSHARK TRAINING</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </footer>
+    <p class="copyright">© 2025 | Gymshark Limited | All Rights Reserved. |&nbsp;We Do Gym.</p>
+    <script src="/js/product.js"></script>
+</body>
+
+</html>

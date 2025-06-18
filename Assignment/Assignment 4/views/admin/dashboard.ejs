@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - GymShark</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/admin.css">
+</head>
+<body>
+    <div class="page-header">
+        <h2>Dashboard</h2>
+    </div>
+
+    <div class="card">
+        <div class="header">
+            <a href="/admin/products/add" class="btn btn-primary">Add New Product</a>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach(product => { %>
+                    <tr>
+                        <td>
+                            <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="product-image">
+                        </td>
+                        <td><%= product.name %></td>
+                        <td>$<%= product.price %></td>
+                        <td><%= product.category %></td>
+                        <td>
+                            <a href="/admin/products/edit/<%= product._id %>" class="action-btn">Edit</a>
+                            <button onclick="deleteProduct('<%= product._id %>')" class="action-btn delete-btn">Delete</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>

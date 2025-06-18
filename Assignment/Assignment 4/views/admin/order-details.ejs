@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - GymShark Admin</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+    <style>
+        .order-details-container {
+            padding: 2rem;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .order-status {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-processing { background: #cce5ff; color: #004085; }
+        .status-shipped { background: #d4edda; color: #155724; }
+        .status-delivered { background: #d1e7dd; color: #0f5132; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .order-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        .order-section h2 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .order-items {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .order-items th,
+        .order-items td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .order-items th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .status-select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-left: 1rem;
+        }
+        .back-btn {
+            padding: 0.5rem 1rem;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+        .back-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="order-details-container">
+        <div class="order-header">
+            <h1>Order Details</h1>
+            <div>
+                <a href="/admin/orders" class="back-btn">Back to Orders</a>
+                <% if (order) { %>
+                    <select id="statusSelect" class="status-select">
+                        <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                        <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                        <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                        <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                        <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                    </select>
+                <% } %>
+            </div>
+        </div>
+
+        <% if (error) { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
+        <% if (order) { %>
+            <div class="order-section">
+                <h2>Order Information</h2>
+                <p><strong>Order ID:</strong> <%= order._id %></p>
+                <p><strong>Date:</strong> <%= new Date(order.createdAt).toLocaleString() %></p>
+                <p><strong>Status:</strong> <span class="order-status status-<%= order.status %>"><%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %></span></p>
+                <p><strong>Total Amount:</strong> $<%= order.totalAmount.toFixed(2) %></p>
+            </div>
+
+            <div class="order-section">
+                <h2>Customer Information</h2>
+                <p><strong>Name:</strong> <%= order.shippingDetails.fullName %></p>
+                <p><strong>Email:</strong> <%= order.shippingDetails.email %></p>
+                <p><strong>Phone:</strong> <%= order.shippingDetails.phone %></p>
+            </div>
+
+            <div class="order-section">
+                <h2>Shipping Address</h2>
+                <p><%= order.shippingDetails.address %></p>
+                <p><%= order.shippingDetails.city %>, <%= order.shippingDetails.state %> <%= order.shippingDetails.zipCode %></p>
+            </div>
+
+            <div class="order-section">
+                <h2>Order Items</h2>
+                <table class="order-items">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.items.forEach(item => { %>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <img src="<%= item.productId?.imageUrl || '/images/default-product.jpg' %>" alt="<%= item.name %>" class="item-image">
+                                        <div>
+                                            <div><%= item.name %></div>
+                                            <% if (item.productId) { %>
+                                                <small>SKU: <%= item.productId._id %></small>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$<%= item.price.toFixed(2) %></td>
+                                <td><%= item.quantity %></td>
+                                <td>$<%= (item.price * item.quantity).toFixed(2) %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+
+    <script>
+        // Handle status update
+        document.getElementById('statusSelect').addEventListener('change', async function() {
+            const newStatus = this.value;
+            try {
+                const response = await fetch(`/admin/orders/<%= order._id %>/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // Update status badge
+                    const statusBadge = document.querySelector('.order-status');
+                    statusBadge.className = `order-status status-${newStatus}`;
+                    statusBadge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+                } else {
+                    alert('Error updating order status');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('Error updating order status');
+            }
+        });
+    </script>
+</body>
+</html> 
