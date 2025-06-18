@@ -1,0 +1,27 @@
+
+    <div class="container">
+        <h1>Our Products</h1>
+        <div class="products-grid">
+            <% products.forEach(product => { %>
+                <div class="product-card">
+                    <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title"><%= product.name %></h3>
+                        <p class="product-price">$<%= product.price %></p>
+                        <p class="product-category"><%= product.category %></p>
+                        <input type="number" class="quantity-input" min="1" value="1" id="quantity-<%= product._id %>">
+                        <button class="add-to-cart" 
+                            data-id="<%= product._id %>"
+                            data-name="<%= product.name %>"
+                            data-price="<%= product.price %>">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <script>
+
+    </script>

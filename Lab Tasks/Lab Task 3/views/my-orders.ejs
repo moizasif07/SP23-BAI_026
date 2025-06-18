@@ -1,0 +1,86 @@
+    <div class="orders-container">
+        <div class="orders-header">
+            <h1>My Orders</h1>
+            <form action="/cart/my-orders" method="GET" class="search-form">
+                <input type="email" name="email" placeholder="Search by email" value="<%= queryEmail || '' %>">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <% if (error) { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
+        <% if (orders && orders.length > 0) { %>
+            <% orders.forEach(order => { %>
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <div>
+                                <label>Order ID</label>
+                                <span><%= order._id %></span>
+                            </div>
+                            <div>
+                                <label>Date</label>
+                                <span><%= new Date(order.createdAt).toLocaleString() %></span>
+                            </div>
+                            <div>
+                                <label>Total Amount</label>
+                                <span>$<%= order.totalAmount.toFixed(2) %></span>
+                            </div>
+                        </div>
+                        <span class="status-badge status-<%= order.status %>">
+                            <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+                        </span>
+                    </div>
+
+                    <div class="order-items">
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% order.items.forEach(item => { %>
+                                    <tr>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                                <img src="<%= item.productId?.imageUrl || '/images/default-product.jpg' %>" 
+                                                     alt="<%= item.name %>" 
+                                                     class="item-image">
+                                                <div>
+                                                    <div><%= item.name %></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$<%= item.price.toFixed(2) %></td>
+                                        <td><%= item.quantity %></td>
+                                        <td>$<%= (item.price * item.quantity).toFixed(2) %></td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="shipping-details">
+                        <h3>Shipping Information</h3>
+                        <p><strong>Name:</strong> <%= order.shippingDetails.fullName %></p>
+                        <p><strong>Email:</strong> <%= order.shippingDetails.email %></p>
+                        <p><strong>Phone:</strong> <%= order.shippingDetails.phone %></p>
+                        <p><strong>Address:</strong> <%= order.shippingDetails.address %></p>
+                        <p><%= order.shippingDetails.city %>, <%= order.shippingDetails.state %> <%= order.shippingDetails.zipCode %></p>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="no-orders">
+                <h2>No Orders Yet</h2>
+                <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
+                <a href="/products" class="shop-now-btn">Shop Now</a>
+            </div>
+        <% } %>
+    </div>
